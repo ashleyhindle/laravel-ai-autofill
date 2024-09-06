@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace AshleyHindle\AiAutofill\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class AiAutofillCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-ai-autofill';
 
     public $description = 'My command';
 
