@@ -2,9 +2,9 @@
 
 namespace AshleyHindle\AiAutofill\Tests;
 
+use AshleyHindle\AiAutofill\AiAutofillServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use AshleyHindle\AiAutofill\AiAutofillServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -13,7 +13,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn(string $modelName) => 'AshleyHindle\\AiAutofill\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
+            fn (string $modelName) => 'AshleyHindle\\AiAutofill\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 

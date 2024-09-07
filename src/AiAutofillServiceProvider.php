@@ -2,9 +2,9 @@
 
 namespace AshleyHindle\AiAutofill;
 
+use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Spatie\LaravelPackageTools\Commands\InstallCommand;
 
 class AiAutofillServiceProvider extends PackageServiceProvider
 {

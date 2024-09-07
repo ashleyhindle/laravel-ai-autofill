@@ -2,11 +2,11 @@
 
 namespace AshleyHindle\AiAutofill\Jobs;
 
-use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
-use OpenAI\Laravel\Facades\OpenAI;
+use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
+use OpenAI\Laravel\Facades\OpenAI;
 
 class AiAutofillJob implements ShouldQueue
 {
@@ -58,13 +58,13 @@ AUTOFILL_PROMPT;
                         'type' => 'object',
                         'strict' => true,
                         'properties' => $schemaProperties,
-                        'required' => array_keys($this->autofill)
-                    ]
-                ]
+                        'required' => array_keys($this->autofill),
+                    ],
+                ],
             ],
             'temperature' => 0.35,
             'messages' => [
-                ['role' => 'system', 'content' => $systemPrompt]
+                ['role' => 'system', 'content' => $systemPrompt],
             ],
         ]);
 
@@ -76,7 +76,7 @@ AUTOFILL_PROMPT;
 
         if (isset($message->refusal)) {
             // TODO: handle refusal
-        } elseif (!isset($message->content)) {
+        } elseif (! isset($message->content)) {
             // TODO: handle no content
         }
 
@@ -93,10 +93,10 @@ AUTOFILL_PROMPT;
     public function middleware(): array
     {
         return [
-            (new WithoutOverlapping(self::class . ':' . $this->model->id))
+            (new WithoutOverlapping(self::class.':'.$this->model->id))
                 ->expireAfter(40)
                 ->releaseAfter(40)
-                ->dontRelease()
+                ->dontRelease(),
         ];
     }
 }

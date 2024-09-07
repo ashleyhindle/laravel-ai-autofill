@@ -2,15 +2,15 @@
 
 namespace AshleyHindle\AiAutofill;
 
-use Illuminate\Database\Eloquent\Model;
 use AshleyHindle\AiAutofill\Jobs\AiAutofillJob;
+use Illuminate\Database\Eloquent\Model;
 
 trait AiAutofill
 {
     public static function bootAiAutofill()
     {
         static::saved(function (Model $model) {
-            if (!isset($model->autofill) || empty($model->autofill) || !$model->isDirty()) {
+            if (! isset($model->autofill) || empty($model->autofill) || ! $model->isDirty()) {
                 return;
             }
 
