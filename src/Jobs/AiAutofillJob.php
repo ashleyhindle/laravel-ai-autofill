@@ -73,17 +73,20 @@ AUTOFILL_PROMPT;
             ],
         ]);
 
-        if ($result->choices[0]?->finishReason === 'length') {
+        if ($result->choices[0]->finishReason === 'length') {
             // TODO: handle finish_reason length failure?
         }
 
         $message = $result->choices[0]->message;
+        /*
+        TODO: Find out why openai-php/laravel doesn't support refusals and support it
 
         if (isset($message->refusal)) {
             // TODO: handle refusal
         } elseif (! isset($message->content)) {
             // TODO: handle no content
         }
+            */
 
         $response = json_decode($message->content, true);
         foreach ($this->autofill as $property => $prompt) {
@@ -98,7 +101,7 @@ AUTOFILL_PROMPT;
     public function middleware(): array
     {
         return [
-            (new WithoutOverlapping(self::class.':'.$this->model->id))
+            (new WithoutOverlapping(self::class . ':' . $this->model->{$this->model->getKeyName()}))
                 ->expireAfter(40)
                 ->releaseAfter(40)
                 ->dontRelease(),
