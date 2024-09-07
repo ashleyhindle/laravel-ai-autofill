@@ -2,13 +2,13 @@
 
 namespace AshleyHindle\AiAutofill\Jobs;
 
+use Illuminate\Bus\Queueable as QueueableByBus;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Bus\Queueable as QueueableByBus;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Queue\SerializesModels;
 use OpenAI\Laravel\Facades\OpenAI;
 
 class AiAutofillJob implements ShouldQueue
@@ -104,7 +104,7 @@ AUTOFILL_PROMPT;
     public function middleware(): array
     {
         return [
-            (new WithoutOverlapping(self::class . ':' . $this->model->{$this->model->getKeyName()}))
+            (new WithoutOverlapping(self::class.':'.$this->model->{$this->model->getKeyName()}))
                 ->expireAfter(40)
                 ->releaseAfter(40)
                 ->dontRelease(),
