@@ -6,6 +6,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/ashleyhindle/laravel-ai-autofill.svg?style=flat-square)](https://packagist.org/packages/ashleyhindle/laravel-ai-autofill)
 
 Simplest way to autofill model properties with OpenAI.
+
 This package listens to the `saved` model event, then adds a queued job to autofill the properties from OpenAI.
 
 Example:
@@ -21,6 +22,9 @@ class Article extends Model {
 ```bash
 composer require ashleyhindle/laravel-ai-autofill
 ```
+
+## Requirements
+You must already have the [openai-php/laravel](https://github.com/openai-php/laravel) package installed to use this package.
 
 ## Usage
 
