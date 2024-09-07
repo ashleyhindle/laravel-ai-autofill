@@ -101,7 +101,7 @@ AUTOFILL_PROMPT;
     public function middleware(): array
     {
         return [
-            (new WithoutOverlapping(self::class . ':' . $this->model->{$this->model->getKeyName()}))
+            (new WithoutOverlapping(self::class.':'.$this->model->{$this->model->getKeyName()}))
                 ->expireAfter(40)
                 ->releaseAfter(40)
                 ->dontRelease(),
