@@ -1,0 +1,102 @@
+<?php
+
+namespace AshleyHindle\AiAutofill\Jobs;
+
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Model;
+use OpenAI\Laravel\Facades\OpenAI;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
+
+class AiAutofillJob implements ShouldQueue
+{
+    use Queueable;
+
+    public function __construct(protected Model $model, protected array $autofill) {}
+
+    public function handle()
+    {
+        if (empty($this->autofill)) {
+            return;
+        }
+
+        $count = count($this->autofill);
+        $jsonAutofill = json_encode($this->autofill);
+        $modelName = class_basename($this->model);
+
+        $systemPrompt = <<<AUTOFILL_PROMPT
+        Return JSON matching the JSON schema provided, returning {$count} values for the property & prompt values provided by the user for this model: {$modelName}.
+
+        You must use the CONTEXT to create the values.
+        The values returned must be the value for the property and nothing else. The values should be strings, unless the prompt specifically requests JSON.
+
+        ### CONTEXT ###
+        {$this->model->toJson()}
+
+        ### PROPERTIES & PROMPTS ###
+        {$jsonAutofill}
+AUTOFILL_PROMPT;
+
+        $schemaProperties = [];
+        foreach ($this->autofill as $property => $prompt) {
+            $schemaProperties[$property] = [
+                'type' => 'string',
+                'description' => $prompt,
+                'output' => 'string',
+                'required' => ['output'],
+                'additionalProperties' => false,
+            ];
+        }
+
+        $result = OpenAI::chat()->create([
+            'model' => 'gpt-4o-mini',
+            'response_format' => [
+                'type' => 'json_schema',
+                'json_schema' => [
+                    'name' => 'autofill',
+                    'schema' => [
+                        'type' => 'object',
+                        'strict' => true,
+                        'properties' => $schemaProperties,
+                        'required' => array_keys($this->autofill)
+                    ]
+                ]
+            ],
+            'temperature' => 0.35,
+            'messages' => [
+                ['role' => 'system', 'content' => $systemPrompt]
+            ],
+        ]);
+
+        if ($result->choices[0]?->finishReason === 'length') {
+            // TODO: handle finish_reason length failure?
+        }
+
+        $message = $result->choices[0]->message;
+
+        if (isset($message->refusal)) {
+            // TODO: handle refusal
+        } elseif (!isset($message->content)) {
+            // TODO: handle no content
+        }
+
+        $response = json_decode($message->content, true);
+        foreach ($this->autofill as $property => $prompt) {
+            if (array_key_exists($property, $response)) {
+                $this->model->{$property} = trim($response[$property], " \r\n\t\"'");
+            }
+        }
+
+        $this->model->saveQuietly();
+    }
+
+    public function middleware(): array
+    {
+        return [
+            (new WithoutOverlapping(self::class . ':' . $this->model->id))
+                ->expireAfter(40)
+                ->releaseAfter(40)
+                ->dontRelease()
+        ];
+    }
+}
