@@ -11,7 +11,7 @@ This package listens to the `saved` model event, then adds a queued job to autof
 Example:
 ```php
 class Article extends Model {
-    use AshleyHindle\AiAutofill;
+    use AshleyHindle\AiAutofill\AiAutofill;
 
     protected $autofill = ['tagline' => 'a super click-baity obnoxious tagline'];
 }
@@ -28,15 +28,20 @@ composer require ashleyhindle/laravel-ai-autofill
 ### Model Trait Usage
 
 Simply use the trait in your model, and add the `$autofill` array.
+The keys are the properties you want to autofill, and the values are the prompts you want to use to fill them.
+
+The whole model, minus `$autofillExclude` properties, is provided to the LLM for context, so the prompts in `$autofill` can be very simple.
 
 ```php
 class MeetingNotes extends Model {
-    use AshleyHindle\AiAutofill;
+    use AshleyHindle\AiAutofill\AiAutofill;
 
     protected $autofill = [
         'summary' => 'executive summary',
         'action_items' => 'Flat JSON array of action items (e.g. ["Item 1", "Item 2", "Item 3"])'
     ];
+
+    protected $autofillExclude = ['zoom_password'];
 }
 ```
 

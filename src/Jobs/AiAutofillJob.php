@@ -12,7 +12,7 @@ class AiAutofillJob implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(protected Model $model, protected array $autofill) {}
+    public function __construct(protected Model $model, protected array $autofill, protected array $autofillExclude = []) {}
 
     public function handle()
     {
@@ -23,6 +23,11 @@ class AiAutofillJob implements ShouldQueue
         $count = count($this->autofill);
         $jsonAutofill = json_encode($this->autofill);
         $modelName = class_basename($this->model);
+        $modelProperties = $this->model->toArray();
+        foreach ($this->autofillExclude as $property) {
+            unset($modelProperties[$property]);
+        }
+        $modelContext = json_encode($modelProperties);
 
         $systemPrompt = <<<AUTOFILL_PROMPT
         Return JSON matching the JSON schema provided, returning {$count} values for the property & prompt values provided by the user for this model: {$modelName}.
@@ -31,7 +36,7 @@ class AiAutofillJob implements ShouldQueue
         The values returned must be the value for the property and nothing else. The values should be strings, unless the prompt specifically requests JSON.
 
         ### CONTEXT ###
-        {$this->model->toJson()}
+        {$modelContext}
 
         ### PROPERTIES & PROMPTS ###
         {$jsonAutofill}

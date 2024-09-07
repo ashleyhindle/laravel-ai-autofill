@@ -14,7 +14,7 @@ trait AiAutofill
                 return;
             }
 
-            AiAutofillJob::dispatch($model, $model->autofill);
+            AiAutofillJob::dispatch($model, $model->autofill, $model->autofillExclude ?? []);
         });
     }
 }
