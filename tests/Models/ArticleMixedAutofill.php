@@ -25,7 +25,7 @@ class ArticleMixedAutofill extends Model
     {
         $bannedBrandsFromDatabase = ['Nike', 'Reebok', 'Umbro'];
 
-        return 'Kick-ass SEO description not including any of these banned brands: ' . implode(', ', $bannedBrandsFromDatabase);
+        return 'Kick-ass SEO description not including any of these banned brands: '.implode(', ', $bannedBrandsFromDatabase);
     }
 
     protected $fillable = ['title', 'content', 'tagline', 'seo_description', 'tags'];

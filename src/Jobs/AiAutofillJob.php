@@ -10,9 +10,9 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Str;
 use OpenAI\Laravel\Facades\OpenAI;
 use ReflectionClass;
-use Illuminate\Support\Str;
 
 class AiAutofillJob implements ShouldQueue
 {
@@ -108,7 +108,7 @@ AUTOFILL_PROMPT;
     public function middleware(): array
     {
         return [
-            (new WithoutOverlapping(self::class . ':' . $this->model->{$this->model->getKeyName()}))
+            (new WithoutOverlapping(self::class.':'.$this->model->{$this->model->getKeyName()}))
                 ->expireAfter(40)
                 ->releaseAfter(40)
                 ->dontRelease(),
@@ -125,15 +125,15 @@ AUTOFILL_PROMPT;
                 // TODO: Reflect on the class to see if it implements the 'prompt' function, if it does call it and add to context
                 $class = new ReflectionClass($promptType);
                 if ($class->implementsInterface(AutofillContract::class)) {
-                    $prompt = call_user_func($promptType . '::prompt', $this->model);
+                    $prompt = call_user_func($promptType.'::prompt', $this->model);
                 }
-            } else if (is_numeric($property)) { // local function, numerical index
-                $methodName = 'autofill' . Str::studly($promptType);
+            } elseif (is_numeric($property)) { // local function, numerical index
+                $methodName = 'autofill'.Str::studly($promptType);
                 if (method_exists($this->model, $methodName)) {
                     $property = $promptType;
                     $prompt = call_user_func([$this->model, $methodName]);
                 }
-            } else if (is_string($promptType)) {
+            } elseif (is_string($promptType)) {
                 $prompt = $promptType;
             }
 

@@ -4,8 +4,8 @@ use AshleyHindle\AiAutofill\Jobs\AiAutofillJob;
 use AshleyHindle\AiAutofill\Tests\Models\ArticleAutofill;
 use AshleyHindle\AiAutofill\Tests\Models\ArticleEmptyAutofill;
 use AshleyHindle\AiAutofill\Tests\Models\ArticleExcludedAutofill;
-use AshleyHindle\AiAutofill\Tests\Models\ArticleMixedAutofill;
 use AshleyHindle\AiAutofill\Tests\Models\ArticleHiddenAutofill;
+use AshleyHindle\AiAutofill\Tests\Models\ArticleMixedAutofill;
 use AshleyHindle\AiAutofill\Tests\Models\ArticleNoAutofill;
 use Illuminate\Support\Facades\Queue;
 
