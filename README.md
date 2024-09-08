@@ -9,6 +9,39 @@
 
 This package listens to the `saved` model event, then adds a queued job that autofills the properties from OpenAI, using 1 API query per model.
 
+**Example:**
+When this article is saved the 'tagline' property will be automatically filled by an AI generated string that's a 'ridiculous click-bait tagline'
+```php
+<?php
+use AshleyHindle\AiAutofill\AiAutofill;
+use Illuminate\Database\Eloquent\Model;
+
+class Article extends Model {
+    use AiAutofill;
+
+
+    protected $autofill = ['tagline' => 'ridiculous click-bait tagline'];
+}
+```
+
+
+## Installation
+```bash
+composer require ashleyhindle/laravel-ai-autofill
+```
+
+## Requirements
+You must already have the [openai-php/laravel](https://github.com/openai-php/laravel) package installed and configured to use AiAutofill.
+
+## Usage
+
+
+### Model Trait Usage
+
+Simply use the trait in your model, and add the `$autofill` array with the keys as the properties you want to autofill, and the values as the prompts you want to use to fill them.
+
+The model name and model properties, except `$autofillExclude` properties, are provided to the LLM for context, so the prompts in `$autofill` can be very simple.
+
 Example:
 ```php
 <?php
@@ -33,41 +66,6 @@ class Article extends Model {
 
         return 'Concise SEO description not including any of these brands: ' . implode(', ', $bannedBrandsFromDatabase);
     }
-}
-```
-
-
-## Installation
-```bash
-composer require ashleyhindle/laravel-ai-autofill
-```
-
-## Requirements
-You must already have the [openai-php/laravel](https://github.com/openai-php/laravel) package installed and configured to use AiAutofill.
-
-## Usage
-
-
-### Model Trait Usage
-
-Simply use the trait in your model, and add the `$autofill` array with the keys as the properties you want to autofill, and the values as the prompts you want to use to fill them.
-
-The model name and model properties, except `$autofillExclude` properties, are provided to the LLM for context, so the prompts in `$autofill` can be very simple.
-
-```php
-<?php
-use AshleyHindle\AiAutofill\AiAutofill;
-use Illuminate\Database\Eloquent\Model;
-
-class MeetingNotes extends Model {
-    use AiAutofill;
-
-    protected $autofill = [
-        'summary' => 'executive summary',
-        'action_items' => 'Flat JSON array of action items (e.g. ["Item 1", "Item 2", "Item 3"])'
-    ];
-
-    protected $autofillExclude = ['zoom_password'];
 }
 ```
 
