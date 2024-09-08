@@ -1,10 +1,10 @@
 <?php
 
 use AshleyHindle\AiAutofill\Jobs\AiAutofillJob;
-use AshleyHindle\AiAutofill\Tests\Models\ArticleNoAutofill;
+use AshleyHindle\AiAutofill\Tests\Models\ArticleAutofill;
 use AshleyHindle\AiAutofill\Tests\Models\ArticleEmptyAutofill;
 use AshleyHindle\AiAutofill\Tests\Models\ArticleExcludedAutofill;
-use AshleyHindle\AiAutofill\Tests\Models\ArticleAutofill;
+use AshleyHindle\AiAutofill\Tests\Models\ArticleNoAutofill;
 use Illuminate\Support\Facades\Queue;
 
 it('doesn\'t autofill with a missing autofill property', function () {
@@ -45,7 +45,7 @@ it('passed excluded properties to the job', function () {
     $content = '### MY CONTENT IS VERY EASY TO SPOT ###';
     $article = ArticleExcludedAutofill::create(['title' => 'My Article', 'content' => $content]);
     $article->save();
-    Queue::assertPushed(function (AiAutofillJob $job) use ($content) {
+    Queue::assertPushed(function (AiAutofillJob $job) {
         return $job->autofill === ['tagline' => 'ridiculous click-bait tagline']
             && $job->autofillExclude === ['content'];
     });

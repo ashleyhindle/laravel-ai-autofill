@@ -19,7 +19,7 @@ class AiAutofillJob implements ShouldQueue
 
     public function handle()
     {
-        if (!isset($this->autofill) || empty($this->autofill)) {
+        if (! isset($this->autofill) || empty($this->autofill)) {
             return;
         }
 
@@ -104,7 +104,7 @@ AUTOFILL_PROMPT;
     public function middleware(): array
     {
         return [
-            (new WithoutOverlapping(self::class . ':' . $this->model->{$this->model->getKeyName()}))
+            (new WithoutOverlapping(self::class.':'.$this->model->{$this->model->getKeyName()}))
                 ->expireAfter(40)
                 ->releaseAfter(40)
                 ->dontRelease(),

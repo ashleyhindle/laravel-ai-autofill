@@ -1,13 +1,11 @@
 <?php
 
 use AshleyHindle\AiAutofill\Jobs\AiAutofillJob;
-use AshleyHindle\AiAutofill\Tests\Models\ArticleNoAutofill;
-use AshleyHindle\AiAutofill\Tests\Models\ArticleEmptyAutofill;
-use AshleyHindle\AiAutofill\Tests\Models\ArticleExcludedAutofill;
 use AshleyHindle\AiAutofill\Tests\Models\ArticleAutofill;
+use AshleyHindle\AiAutofill\Tests\Models\ArticleNoAutofill;
 use OpenAI\Laravel\Facades\OpenAI;
-use OpenAI\Responses\Chat\CreateResponse;
 use OpenAI\Resources\Chat;
+use OpenAI\Responses\Chat\CreateResponse;
 
 it('calls the OpenAI API once with the correct parameters', function () {
     OpenAI::fake([
@@ -31,7 +29,6 @@ it('calls the OpenAI API once with the correct parameters', function () {
     });
 });
 
-
 it('calls the OpenAI API, without sharing excluded properties in the prompt', function () {
     OpenAI::fake([
         CreateResponse::fake([
@@ -52,7 +49,7 @@ it('calls the OpenAI API, without sharing excluded properties in the prompt', fu
             $parameters['response_format']['type'] === 'json_schema' &&
             str_contains($parameters['messages'][0]['content'], 'Howdy') &&
             str_contains($parameters['messages'][0]['content'], 'ridiculous click-bait tagline') &&
-            !str_contains($parameters['messages'][0]['content'], $content);
+            ! str_contains($parameters['messages'][0]['content'], $content);
     });
 });
 
