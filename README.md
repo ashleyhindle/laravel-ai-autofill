@@ -89,7 +89,9 @@ composer test
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
 ### TODO
+- [ ] Handle OpenAI failures more gracefully
 - [ ] Add config file support
 - [ ] Add multiple provider & model support
 - [ ] Allow overriding system prompt
+- [ ] Allow setting queue name and max attempts
 - [ ] Enable prompt creation through PHP Attributes
