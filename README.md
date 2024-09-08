@@ -5,6 +5,8 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/ashleyhindle/laravel-ai-autofill/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/ashleyhindle/laravel-ai-autofill/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/ashleyhindle/laravel-ai-autofill.svg?style=flat-square)](https://packagist.org/packages/ashleyhindle/laravel-ai-autofill)
 
+![](./example-article-seo.png)
+
 Simplest way to autofill model properties with OpenAI.
 
 This package listens to the `saved` model event, then adds a queued job to autofill the properties from OpenAI.
@@ -17,7 +19,6 @@ class Article extends Model {
     protected $autofill = ['tagline' => 'a super click-baity obnoxious tagline'];
 }
 ```
-![](./example-article-seo.png)
 
 
 ## Installation
