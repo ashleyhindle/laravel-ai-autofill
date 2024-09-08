@@ -90,5 +90,6 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 ### TODO
 - [ ] Add config file support
-- [ ] Add multiple provider support
+- [ ] Add multiple provider & model support
+- [ ] Allow overriding system prompt
 - [ ] Enable prompt creation through PHP Attributes
