@@ -69,9 +69,6 @@ class Article extends Model {
 }
 ```
 
-### Config Usage
-Setting up autofill in `config/ai-autofill.php` is coming soon..
-
 ## Testing
 
 ```bash
