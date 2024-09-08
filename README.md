@@ -1,15 +1,13 @@
-# Autofill model properties with AI
+![](./example-article-seo.png)
+
+# Autofill model properties with OpenAI
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/ashleyhindle/laravel-ai-autofill.svg?style=flat-square)](https://packagist.org/packages/ashleyhindle/laravel-ai-autofill)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/ashleyhindle/laravel-ai-autofill/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/ashleyhindle/laravel-ai-autofill/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/ashleyhindle/laravel-ai-autofill/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/ashleyhindle/laravel-ai-autofill/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/ashleyhindle/laravel-ai-autofill.svg?style=flat-square)](https://packagist.org/packages/ashleyhindle/laravel-ai-autofill)
 
-![](./example-article-seo.png)
-
-Simplest way to autofill model properties with OpenAI.
-
-This package listens to the `saved` model event, then adds a queued job to autofill the properties from OpenAI.
+This package listens to the `saved` model event, then adds a queued job that autofills the properties from OpenAI, using 1 API query per model.
 
 Example:
 ```php
@@ -20,7 +18,10 @@ use Illuminate\Database\Eloquent\Model;
 class Article extends Model {
     use AiAutofill;
 
-    protected $autofill = ['tagline' => 'a super click-baity obnoxious tagline'];
+    protected $autofill = [
+        'tagline' => 'a super click-baity obnoxious tagline',
+        'seo_description' => 'a concise SEO description'
+    ];
 }
 ```
 
@@ -40,7 +41,7 @@ You must already have the [openai-php/laravel](https://github.com/openai-php/lar
 
 Simply use the trait in your model, and add the `$autofill` array with the keys as the properties you want to autofill, and the values as the prompts you want to use to fill them.
 
-The whole model, minus `$autofillExclude` properties, is provided to the LLM for context, so the prompts in `$autofill` can be very simple.
+The model name and model properties, except `$autofillExclude` properties, are provided to the LLM for context, so the prompts in `$autofill` can be very simple.
 
 ```php
 <?php
@@ -63,7 +64,6 @@ class MeetingNotes extends Model {
 Setting up autofill in `config/ai-autofill.php` is coming soon..
 
 ## Testing
-Coming soon...
 
 ```bash
 composer test
