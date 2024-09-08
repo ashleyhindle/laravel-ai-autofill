@@ -5,6 +5,7 @@ namespace AshleyHindle\AiAutofill\Tests;
 use AshleyHindle\AiAutofill\AiAutofillServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
+use function Orchestra\Testbench\workbench_path;
 
 class TestCase extends Orchestra
 {
@@ -13,7 +14,14 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'AshleyHindle\\AiAutofill\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn(string $modelName) => 'AshleyHindle\\AiAutofill\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
+        );
+    }
+
+    protected function defineDatabaseMigrations()
+    {
+        $this->loadMigrationsFrom(
+            workbench_path('database/migrations')
         );
     }
 
@@ -26,6 +34,11 @@ class TestCase extends Orchestra
 
     public function getEnvironmentSetUp($app)
     {
-        config()->set('database.default', 'testing');
+        config()->set('database.default', 'testbench');
+        config()->set('database.connections.testbench', [
+            'driver'   => 'sqlite',
+            'database' => ':memory:',
+            'prefix'   => '',
+        ]);
     }
 }

@@ -15,11 +15,11 @@ class AiAutofillJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, QueueableByBus, SerializesModels;
 
-    public function __construct(protected Model $model, protected array $autofill, protected array $autofillExclude = []) {}
+    public function __construct(public Model $model, public array $autofill = [], public array $autofillExclude = []) {}
 
     public function handle()
     {
-        if (empty($this->autofill)) {
+        if (!isset($this->autofill) || empty($this->autofill)) {
             return;
         }
 
@@ -104,7 +104,7 @@ AUTOFILL_PROMPT;
     public function middleware(): array
     {
         return [
-            (new WithoutOverlapping(self::class.':'.$this->model->{$this->model->getKeyName()}))
+            (new WithoutOverlapping(self::class . ':' . $this->model->{$this->model->getKeyName()}))
                 ->expireAfter(40)
                 ->releaseAfter(40)
                 ->dontRelease(),
