@@ -2,10 +2,12 @@
 
 use AshleyHindle\AiAutofill\Jobs\AiAutofillJob;
 use AshleyHindle\AiAutofill\Tests\Models\ArticleAutofill;
+use AshleyHindle\AiAutofill\Tests\Models\ArticleMixedAutofill;
 use AshleyHindle\AiAutofill\Tests\Models\ArticleNoAutofill;
 use OpenAI\Laravel\Facades\OpenAI;
 use OpenAI\Resources\Chat;
 use OpenAI\Responses\Chat\CreateResponse;
+use Illuminate\Support\Facades\Queue;
 
 it('calls the OpenAI API once with the correct parameters', function () {
     OpenAI::fake([
@@ -27,6 +29,21 @@ it('calls the OpenAI API once with the correct parameters', function () {
             str_contains($parameters['messages'][0]['content'], 'Howdy') &&
             str_contains($parameters['messages'][0]['content'], 'ridiculous click-bait tagline');
     });
+});
+
+it('handles MIXED parameters beautifully', function () {
+    Queue::fake();
+
+    $article = new ArticleMixedAutofill(['title' => 'Howdy']);
+    $article->save();
+
+    $jobs = Queue::pushedJobs();
+    $job = reset($jobs)[0]['job'];
+    expect($job->buildAutofillContext())->toBe([
+        'tagline' => 'ridiculous click-bait tagline',
+        'seo_description' => 'Kick-ass SEO description not including any of these banned brands: Nike, Reebok, Umbro',
+        'tags' => 'CSV of up to 5 unique lowercase tags using only letters, numbers, and hyphens (i.e. tag-1, tag-2, tag3). Only return the most relevant. You do not need to use all 5.',
+    ]);
 });
 
 it('calls the OpenAI API, without sharing excluded properties in the prompt', function () {

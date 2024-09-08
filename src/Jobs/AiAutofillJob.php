@@ -2,6 +2,7 @@
 
 namespace AshleyHindle\AiAutofill\Jobs;
 
+use AshleyHindle\AiAutofill\Autofills\AutofillContract;
 use Illuminate\Bus\Queueable as QueueableByBus;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +11,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use OpenAI\Laravel\Facades\OpenAI;
+use ReflectionClass;
+use Illuminate\Support\Str;
 
 class AiAutofillJob implements ShouldQueue
 {
@@ -23,8 +26,9 @@ class AiAutofillJob implements ShouldQueue
             return;
         }
 
-        $count = count($this->autofill);
-        $jsonAutofill = json_encode($this->autofill);
+        $autofillContext = $this->buildAutofillContext();
+        $jsonAutofillContext = json_encode($autofillContext);
+        $count = count($autofillContext);
         $modelName = class_basename($this->model);
         $modelProperties = $this->model->toArray();
         foreach ($this->autofillExclude as $property) {
@@ -42,11 +46,11 @@ class AiAutofillJob implements ShouldQueue
         {$modelContext}
 
         ### PROPERTIES & PROMPTS ###
-        {$jsonAutofill}
+        {$jsonAutofillContext}
 AUTOFILL_PROMPT;
 
         $schemaProperties = [];
-        foreach ($this->autofill as $property => $prompt) {
+        foreach ($autofillContext as $property => $prompt) {
             $schemaProperties[$property] = [
                 'type' => 'string',
                 'description' => $prompt,
@@ -66,7 +70,7 @@ AUTOFILL_PROMPT;
                         'type' => 'object',
                         'strict' => true,
                         'properties' => $schemaProperties,
-                        'required' => array_keys($this->autofill),
+                        'required' => array_keys($autofillContext),
                     ],
                 ],
             ],
@@ -92,7 +96,7 @@ AUTOFILL_PROMPT;
             */
 
         $response = json_decode($message->content, true);
-        foreach ($this->autofill as $property => $prompt) {
+        foreach ($autofillContext as $property => $prompt) {
             if (array_key_exists($property, $response)) {
                 $this->model->{$property} = trim($response[$property], " \r\n\t\"'");
             }
@@ -104,10 +108,38 @@ AUTOFILL_PROMPT;
     public function middleware(): array
     {
         return [
-            (new WithoutOverlapping(self::class.':'.$this->model->{$this->model->getKeyName()}))
+            (new WithoutOverlapping(self::class . ':' . $this->model->{$this->model->getKeyName()}))
                 ->expireAfter(40)
                 ->releaseAfter(40)
                 ->dontRelease(),
         ];
+    }
+
+    public function buildAutofillContext(): array
+    {
+        $context = [];
+
+        foreach ($this->autofill as $property => $promptType) {
+            $prompt = '';
+            if (is_string($promptType) && (trait_exists($promptType) || class_exists($promptType))) { // 'Autofill Contract' compatible class
+                // TODO: Reflect on the class to see if it implements the 'prompt' function, if it does call it and add to context
+                $class = new ReflectionClass($promptType);
+                if ($class->implementsInterface(AutofillContract::class)) {
+                    $prompt = call_user_func($promptType . '::prompt', $this->model);
+                }
+            } else if (is_numeric($property)) { // local function, numerical index
+                $methodName = 'autofill' . Str::studly($promptType);
+                if (method_exists($this->model, $methodName)) {
+                    $property = $promptType;
+                    $prompt = call_user_func([$this->model, $methodName]);
+                }
+            } else if (is_string($promptType)) {
+                $prompt = $promptType;
+            }
+
+            $context[$property] = $prompt;
+        }
+
+        return array_filter($context);
     }
 }

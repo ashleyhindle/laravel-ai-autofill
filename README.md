@@ -13,15 +13,26 @@ Example:
 ```php
 <?php
 use AshleyHindle\AiAutofill\AiAutofill;
+use AshleyHindle\AiAutofill\Autofills\Tags;
 use Illuminate\Database\Eloquent\Model;
 
 class Article extends Model {
     use AiAutofill;
 
     protected $autofill = [
-        'tagline' => 'a super click-baity obnoxious tagline',
-        'seo_description' => 'a concise SEO description'
+        'tagline' => 'ridiculous click-bait tagline', // simple string
+        'tags' => Tags::class, // AiAutofill tested & provided prompt
+        'seo_description' // local function
     ];
+
+    protected $autofillExclude = ['authors_email']; // Won't be included in the prompt context
+
+    public function autofillSeoDescription()
+    {
+        $bannedBrandsFromDatabase = ['Nike', 'Reebok', 'Umbro'];
+
+        return 'Concise SEO description not including any of these brands: ' . implode(', ', $bannedBrandsFromDatabase);
+    }
 }
 ```
 
@@ -78,3 +89,8 @@ composer test
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+### TODO
+- [ ] Add config file support
+- [ ] Add multiple provider support
+- [ ] Enable prompt creation through PHP Attributes
