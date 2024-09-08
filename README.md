@@ -17,6 +17,8 @@ class Article extends Model {
     protected $autofill = ['tagline' => 'a super click-baity obnoxious tagline'];
 }
 ```
+![](./example-article-seo.png)
+
 
 ## Installation
 ```bash
