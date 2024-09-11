@@ -30,6 +30,21 @@ class Article extends Model {
 composer require ashleyhindle/laravel-ai-autofill
 ```
 
+## Setup
+```bash
+php artisan ai-autofill:install
+```
+
+You'll then have a `config/ai-autofill.php` file that sets up your providers. You'll need to ensure you have the necessary `.env` variables setup.
+
+The key ones are:
+```yaml
+OPENAI_API_KEY=
+ANTHROPIC_API_KEY=
+OLLAMA_URL=
+OLLAMA_MODEL=
+```
+
 ## Usage
 
 ### Model Trait Usage
