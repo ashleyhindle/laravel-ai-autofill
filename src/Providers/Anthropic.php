@@ -3,16 +3,16 @@
 namespace AshleyHindle\AiAutofill\Providers;
 
 use AshleyHindle\AiAutofill\AutofillContext;
-use AshleyHindle\AiAutofill\Autofills;
 use AshleyHindle\AiAutofill\AutofillResults;
 use Illuminate\Support\Facades\Http;
 
 class Anthropic implements ProviderContract
 {
     public string $apiKey;
+
     public string $llmModel;
 
-    public function __construct(string $apiKey = null, string $llmModel = null)
+    public function __construct(?string $apiKey = null, ?string $llmModel = null)
     {
         $this->apiKey = $apiKey ?? config('ai-autofill.providers.anthropic.api_key');
         $this->llmModel = $llmModel ?? config('ai-autofill.providers.anthropic.defaults.model');
@@ -39,7 +39,7 @@ PROMPT;
 
     public function autofill(AutofillContext $context): AutofillResults|array
     {
-        $results = new AutofillResults();
+        $results = new AutofillResults;
 
         $timeout = config('ai-autofill.defaults.timeout', 10);
         $response = Http::timeout($timeout)
@@ -53,8 +53,8 @@ PROMPT;
                 'messages' => [
                     [
                         'role' => 'user',
-                        'content' => $this->prompt($context)
-                    ]
+                        'content' => $this->prompt($context),
+                    ],
                 ],
                 'stream' => false,
                 'temperature' => config('ai-autofill.providers.anthropic.defaults.temperature', 0.35),

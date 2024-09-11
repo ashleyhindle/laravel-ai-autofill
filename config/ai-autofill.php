@@ -20,7 +20,7 @@ return [
                 'temperature' => 0.2,
                 'max_tokens' => 1024,
             ],
-            'api_key' => env('ANTHROPIC_API_KEY')
+            'api_key' => env('ANTHROPIC_API_KEY'),
         ],
         'ollama' => [
             'defaults' => [
@@ -29,7 +29,7 @@ return [
             ],
             'model' => env('OLLAMA_MODEL', 'llama3.1'),
             'url' => env('OLLAMA_URL', 'http://127.0.0.1:11434'),
-        ]
+        ],
     ],
 
 ];

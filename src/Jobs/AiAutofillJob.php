@@ -3,19 +3,15 @@
 namespace AshleyHindle\AiAutofill\Jobs;
 
 use AshleyHindle\AiAutofill\AutofillContext;
-use AshleyHindle\AiAutofill\Autofills\AutofillContract;
 use AshleyHindle\AiAutofill\Providers\Anthropic;
 use AshleyHindle\AiAutofill\Providers\Ollama;
 use AshleyHindle\AiAutofill\Providers\OpenAi;
 use Illuminate\Bus\Queueable as QueueableByBus;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Str;
-use ReflectionClass;
 
 class AiAutofillJob implements ShouldQueue
 {
@@ -33,9 +29,9 @@ class AiAutofillJob implements ShouldQueue
         $model = $context->model;
         $providerName = config('ai-autofill.defaults.provider');
         $provider = match ($providerName) {
-            'ollama' => new Ollama(),
-            'anthropic' => new Anthropic(),
-            'openai' => new OpenAi(),
+            'ollama' => new Ollama,
+            'anthropic' => new Anthropic,
+            'openai' => new OpenAi,
         };
 
         $results = $provider->autofill($context);
@@ -52,7 +48,7 @@ class AiAutofillJob implements ShouldQueue
     public function middleware(): array
     {
         return [
-            (new WithoutOverlapping(self::class . ':' . $this->context->model->{$this->context->model->getKeyName()}))
+            (new WithoutOverlapping(self::class.':'.$this->context->model->{$this->context->model->getKeyName()}))
                 ->expireAfter(40)
                 ->releaseAfter(40)
                 ->dontRelease(),

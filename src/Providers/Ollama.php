@@ -3,16 +3,16 @@
 namespace AshleyHindle\AiAutofill\Providers;
 
 use AshleyHindle\AiAutofill\AutofillContext;
-use AshleyHindle\AiAutofill\Autofills;
 use AshleyHindle\AiAutofill\AutofillResults;
 use Illuminate\Support\Facades\Http;
 
 class Ollama implements ProviderContract
 {
     public string $url;
+
     public string $llmModel;
 
-    public function __construct(string $url = null, string $llmModel = null)
+    public function __construct(?string $url = null, ?string $llmModel = null)
     {
         $this->url = $url ?? config('ai-autofill.providers.ollama.url');
         $this->llmModel = $model ?? config('ai-autofill.providers.ollama.model');
@@ -41,22 +41,22 @@ PROMPT;
 
     public function autofill(AutofillContext $context): AutofillResults|array
     {
-        $results = new AutofillResults();
+        $results = new AutofillResults;
 
         $timeout = config('ai-autofill.providers.ollama.defaults.timeout', config('ai-autofill.defaults.timeout', 10));
         foreach ($context->autofills as $property => $prompt) {
-            $response = Http::timeout($timeout)->post($this->url . '/api/chat', [
+            $response = Http::timeout($timeout)->post($this->url.'/api/chat', [
                 'model' => $this->llmModel,
                 'messages' => [
                     [
                         'role' => 'user',
                         'content' => $this->prompt($context),
-                    ]
+                    ],
                 ],
                 'stream' => false,
                 'options' => [
-                    'temperature' => config('ai-autofill.providers.ollama.defaults.temperature', 0.35)
-                ]
+                    'temperature' => config('ai-autofill.providers.ollama.defaults.temperature', 0.35),
+                ],
             ]);
 
             $response = json_decode($response->json('message.content'), true, JSON_THROW_ON_ERROR);

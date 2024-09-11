@@ -3,17 +3,16 @@
 namespace AshleyHindle\AiAutofill\Providers;
 
 use AshleyHindle\AiAutofill\AutofillContext;
-use AshleyHindle\AiAutofill\Autofills;
 use AshleyHindle\AiAutofill\AutofillResults;
-use Illuminate\Support\Facades\Http;
 use OpenAI\Laravel\Facades\OpenAI as OpenAIFacade;
 
 class OpenAi implements ProviderContract
 {
     public string $apiKey;
+
     public string $llmModel;
 
-    public function __construct(string $apiKey = null, string $llmModel = null)
+    public function __construct(?string $apiKey = null, ?string $llmModel = null)
     {
         $this->apiKey = $apiKey ?? config('ai-autofill.providers.openai.api_key');
         $this->llmModel = $llmModel ?? config('ai-autofill.providers.openai.defaults.model');
@@ -37,8 +36,7 @@ PROMPT;
 
     public function autofill(AutofillContext $context): AutofillResults|array
     {
-        $results = new AutofillResults();
-
+        $results = new AutofillResults;
 
         $schemaProperties = [];
         foreach ($context->autofills as $property => $prompt) {
