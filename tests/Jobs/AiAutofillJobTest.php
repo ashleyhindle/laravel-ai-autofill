@@ -3,14 +3,13 @@
 use AshleyHindle\AiAutofill\AutofillContext;
 use AshleyHindle\AiAutofill\Jobs\AiAutofillJob;
 use AshleyHindle\AiAutofill\Tests\Models\ArticleAutofill;
-use AshleyHindle\AiAutofill\Tests\Models\ArticleMixedAutofill;
 use AshleyHindle\AiAutofill\Tests\Models\ArticleExcludedAutofill;
+use AshleyHindle\AiAutofill\Tests\Models\ArticleMixedAutofill;
 use AshleyHindle\AiAutofill\Tests\Models\ArticleNoAutofill;
 use Illuminate\Support\Facades\Queue;
 use OpenAI\Laravel\Facades\OpenAI;
 use OpenAI\Resources\Chat;
 use OpenAI\Responses\Chat\CreateResponse;
-use Illuminate\Config\Repository;
 
 it('calls the OpenAI API once with the correct parameters', function () {
     OpenAI::fake([
