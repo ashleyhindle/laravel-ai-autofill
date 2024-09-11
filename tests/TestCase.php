@@ -15,7 +15,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'AshleyHindle\\AiAutofill\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn(string $modelName) => 'AshleyHindle\\AiAutofill\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
     }
 
@@ -41,5 +41,6 @@ class TestCase extends Orchestra
             'database' => ':memory:',
             'prefix' => '',
         ]);
+        config()->set('ai-autofill.providers.openai.api_key', 'pikachu');
     }
 }

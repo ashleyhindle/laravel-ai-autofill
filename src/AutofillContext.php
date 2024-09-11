@@ -15,13 +15,15 @@ class AutofillContext
 
     public array $autofills;
 
+    public array $autofillExclude;
+
     public int $count;
 
     public function __construct(public Model $model)
     {
         $this->modelName = class_basename($model);
         $this->modelProperties = $model->toArray();
-        $this->exclude($model->autofillExclude ?? $model->hidden ?? []);
+        $this->exclude($model->getAutofillExclude());
         $this->autofill($model->getAutofill());
 
         return $this;
@@ -48,6 +50,7 @@ class AutofillContext
             unset($modelProperties[$property]);
         }
 
+        $this->autofillExclude = $excludes;
         $this->modelProperties = $modelProperties;
 
         return $this;
@@ -73,10 +76,10 @@ class AutofillContext
                 // TODO: Reflect on the class to see if it implements the 'prompt' function, if it does call it and add to context
                 $class = new ReflectionClass($promptType);
                 if ($class->implementsInterface(AutofillContract::class)) {
-                    $prompt = call_user_func($promptType.'::prompt', $this->model);
+                    $prompt = call_user_func($promptType . '::prompt', $this->model);
                 }
             } elseif (is_numeric($property)) { // local function, numerical index
-                $methodName = 'autofill'.Str::studly($promptType);
+                $methodName = 'autofill' . Str::studly($promptType);
                 if (method_exists($this->model, $methodName)) {
                     $property = $promptType;
                     $prompt = call_user_func([$this->model, $methodName]);

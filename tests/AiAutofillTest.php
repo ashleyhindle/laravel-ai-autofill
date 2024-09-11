@@ -55,8 +55,8 @@ it('passed excluded properties to the job', function () {
     $article = ArticleExcludedAutofill::create(['title' => 'My Article', 'content' => $content]);
     $article->save();
     Queue::assertPushed(function (AiAutofillJob $job) {
-        return $job->autofill === ['tagline' => 'ridiculous click-bait tagline']
-            && $job->autofillExclude === ['content'];
+        return $job->context->autofills === ['tagline' => 'ridiculous click-bait tagline']
+            && $job->context->autofillExclude === ['content'];
     });
 });
 
@@ -66,7 +66,7 @@ it('defaults excluded properties to $hidden', function () {
     $article = ArticleHiddenAutofill::create(['title' => 'My Article', 'content' => $content]);
     $article->save();
     Queue::assertPushed(function (AiAutofillJob $job) {
-        return $job->autofill === ['tagline' => 'ridiculous click-bait tagline']
-            && $job->autofillExclude === ['content'];
+        return $job->context->autofills === ['tagline' => 'ridiculous click-bait tagline']
+            && $job->context->autofillExclude === ['content'];
     });
 });

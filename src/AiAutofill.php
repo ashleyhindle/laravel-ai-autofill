@@ -18,8 +18,13 @@ trait AiAutofill
         });
     }
 
-    public function getAutofill()
+    public function getAutofill(): array
     {
-        return $this->autofill;
+        return $this->autofill ?? [];
+    }
+
+    public function getAutofillExclude(): array
+    {
+        return $this->autofillExclude ?? $this->hidden ?? [];
     }
 }
