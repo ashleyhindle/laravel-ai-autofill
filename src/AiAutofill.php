@@ -14,7 +14,12 @@ trait AiAutofill
                 return;
             }
 
-            AiAutofillJob::dispatch($model, $model->autofill, $model->autofillExclude ?? $model->hidden ?? []);
+            AiAutofillJob::dispatch(new AutofillContext($model));
         });
+    }
+
+    public function getAutofill()
+    {
+        return $this->autofill;
     }
 }

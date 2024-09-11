@@ -11,7 +11,7 @@ class AiAutofillServiceProvider extends PackageServiceProvider
     public function configurePackage(Package $package): void
     {
         $package
-            ->name('laravel-ai-autofill')
+            ->name('ai-autofill')
             ->hasConfigFile()
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
