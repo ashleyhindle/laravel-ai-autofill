@@ -49,7 +49,7 @@ class AiAutofillJob implements ShouldQueue
     public function middleware(): array
     {
         return [
-            (new WithoutOverlapping(self::class . ':' . $this->context->model->{$this->context->model->getKeyName()}))
+            (new WithoutOverlapping(self::class.':'.$this->context->model->{$this->context->model->getKeyName()}))
                 ->expireAfter(40)
                 ->releaseAfter(40)
                 ->dontRelease(),

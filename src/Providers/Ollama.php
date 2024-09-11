@@ -45,7 +45,7 @@ PROMPT;
 
         $timeout = config('ai-autofill.providers.ollama.defaults.timeout', config('ai-autofill.defaults.timeout', 10));
         foreach ($context->autofills as $property => $prompt) {
-            $response = Http::timeout($timeout)->post($this->url . '/api/chat', [
+            $response = Http::timeout($timeout)->post($this->url.'/api/chat', [
                 'model' => $this->llmModel,
                 'messages' => [
                     [
