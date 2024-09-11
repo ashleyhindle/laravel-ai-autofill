@@ -46,7 +46,7 @@ it('handles MIXED parameters beautifully', function () {
     expect($job->context->autofills)->toBe([
         'tagline' => 'ridiculous click-bait tagline',
         'seo_description' => 'Kick-ass SEO description not including any of these banned brands: Nike, Reebok, Umbro',
-        'tags' => "CSV of up to 5 unique lowercase tags using only letters, numbers, and hyphens (i.e. tag-1, tag-2, tag3). Only return the most relevant - you do not need to use all 5.\n\n        Banned tags: tag-1, tag-2, tag3",
+        'tags' => "CSV of up to 5 unique lowercase tags using only letters, numbers, and hyphens (i.e. tag-1, tag-2, tag3). Only return the most relevant - you do not need to use all 5. Banned tags: tag-1, tag-2, tag3",
     ]);
 });
 
