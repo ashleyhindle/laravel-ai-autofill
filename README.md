@@ -1,13 +1,13 @@
 ![](./example-article-seo.png)
 
-# Autofill model properties with OpenAI
+# Autofill model properties with AI
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/ashleyhindle/laravel-ai-autofill.svg?style=flat-square)](https://packagist.org/packages/ashleyhindle/laravel-ai-autofill)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/ashleyhindle/laravel-ai-autofill/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/ashleyhindle/laravel-ai-autofill/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/ashleyhindle/laravel-ai-autofill/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/ashleyhindle/laravel-ai-autofill/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/ashleyhindle/laravel-ai-autofill.svg?style=flat-square)](https://packagist.org/packages/ashleyhindle/laravel-ai-autofill)
 
-This package listens to the `saved` model event, then adds a queued job that autofills the properties from OpenAI, using 1 API query per model.
+This package listens to the `saved` model event, then adds a queued job that autofills the properties from either OpenAI, Anthropic or Ollamo, using 1 API query per model.
 
 **Example:**
 When this article is saved the 'tagline' property will be automatically filled by an AI generated string that's a 'ridiculous click-bait tagline'
@@ -30,11 +30,7 @@ class Article extends Model {
 composer require ashleyhindle/laravel-ai-autofill
 ```
 
-## Requirements
-You must already have the [openai-php/laravel](https://github.com/openai-php/laravel) package installed and configured to use AiAutofill.
-
 ## Usage
-
 
 ### Model Trait Usage
 
@@ -88,7 +84,6 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 ### TODO
 - [ ] Handle OpenAI failures more gracefully
 - [ ] Add config file support
-- [ ] Add multiple provider & model support
 - [ ] Allow overriding system prompt
 - [ ] Allow setting queue name and max attempts
 - [ ] Enable prompt creation through PHP Attributes

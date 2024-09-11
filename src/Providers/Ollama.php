@@ -15,7 +15,7 @@ class Ollama implements ProviderContract
     public function __construct(?string $url = null, ?string $llmModel = null)
     {
         $this->url = $url ?? config('ai-autofill.providers.ollama.url');
-        $this->llmModel = $llmModel ?? config('ai-autofill.providers.ollama.model');
+        $this->llmModel = $llmModel ?? config('ai-autofill.providers.ollama.defaults.model');
     }
 
     public function prompt(AutofillContext $context): string
