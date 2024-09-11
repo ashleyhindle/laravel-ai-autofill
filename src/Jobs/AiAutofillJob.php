@@ -27,11 +27,12 @@ class AiAutofillJob implements ShouldQueue
         }
 
         $model = $context->model;
-        $providerName = config('ai-autofill.defaults.provider');
+        $providerName = config('ai-autofill.defaults.provider', 'openai');
         $provider = match ($providerName) {
             'ollama' => new Ollama,
             'anthropic' => new Anthropic,
             'openai' => new OpenAi,
+            default => new OpenAi
         };
 
         $results = $provider->autofill($context);
@@ -48,7 +49,7 @@ class AiAutofillJob implements ShouldQueue
     public function middleware(): array
     {
         return [
-            (new WithoutOverlapping(self::class.':'.$this->context->model->{$this->context->model->getKeyName()}))
+            (new WithoutOverlapping(self::class . ':' . $this->context->model->{$this->context->model->getKeyName()}))
                 ->expireAfter(40)
                 ->releaseAfter(40)
                 ->dontRelease(),

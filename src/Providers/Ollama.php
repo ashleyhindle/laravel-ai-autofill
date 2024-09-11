@@ -15,7 +15,7 @@ class Ollama implements ProviderContract
     public function __construct(?string $url = null, ?string $llmModel = null)
     {
         $this->url = $url ?? config('ai-autofill.providers.ollama.url');
-        $this->llmModel = $model ?? config('ai-autofill.providers.ollama.model');
+        $this->llmModel = $llmModel ?? config('ai-autofill.providers.ollama.model');
     }
 
     public function prompt(AutofillContext $context): string
@@ -45,7 +45,7 @@ PROMPT;
 
         $timeout = config('ai-autofill.providers.ollama.defaults.timeout', config('ai-autofill.defaults.timeout', 10));
         foreach ($context->autofills as $property => $prompt) {
-            $response = Http::timeout($timeout)->post($this->url.'/api/chat', [
+            $response = Http::timeout($timeout)->post($this->url . '/api/chat', [
                 'model' => $this->llmModel,
                 'messages' => [
                     [
